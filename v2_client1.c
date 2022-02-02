@@ -79,10 +79,10 @@ char buffer1[1024];
                 num2 = *buffer1 - '0';
                 suma = num1+num2;                       //Send ans2 to server
                 write(sockfd,&suma, sizeof(suma));
-                printf("The result is: %d\n", suma);
-                }
+         }
 
 close(sockfd);
 return 0;
 }
+
 
