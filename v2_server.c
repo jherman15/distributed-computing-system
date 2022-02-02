@@ -18,6 +18,7 @@ void error(const char *msg)
 int main(int argc, char *argv[])
 {
      int sockfd, newsockfd, portno;
+     int temp = 0;
      socklen_t clilen;
      char buffer[1024];
      char buffer1[1024];
@@ -105,20 +106,21 @@ int num1,num2;
                                 }else{
                                         read(newsockfd, &ans, sizeof(int));
                                         if(ans == 20){
-                                                for(int i=0; i<5; i++){
+                                                for(int i=0; i<10; i++){
                                                         printf("Waiting...\n");
                                                         sleep(1);
+                                                        temp++;
+                                                        read(newsockfd, &ans, sizeof(int));
                                                         if(ans != 20) break;
                                                 }
-						printf("Client not responding\n");
-                                                close(newsockfd);
-                                        }else{
-	                                        for(int i=0; i<5; i++){
-                                                        printf("Waiting...\n");
-                                                        sleep(1);
-                                                        if(ans != 20) break;
+                                                if(temp == 10){
+                                                        printf("Client not responding\n");
+                                                        close(newsockfd);
                                                 }
-                                                printf("The result is: %d\n", ans);
+                                                else{
+                                                
+                                                        printf("The result is: %d\n", ans);
+                                                }
                                         }
 
                                 }
@@ -133,4 +135,3 @@ int num1,num2;
      close(sockfd);
      return 0;
 }
-
