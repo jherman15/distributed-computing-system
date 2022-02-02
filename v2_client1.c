@@ -15,13 +15,11 @@ void error(const char *msg)
     perror(msg);
     exit(0);
 }
-
 int main(int argc, char *argv[])
 {
     int sockfd, portno, n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
-
     char buffer[1024];
     if (argc < 3)
     {
@@ -50,27 +48,41 @@ int suma;
 int num1, num2;
 char buffer1[1024];
 
-	while(1){
-	//	printf("Client: \t");
-	//	scanf("%s", &buffer[0]);
-	//	send(sockfd, buffer, strlen(buffer), 0);
+        while(1){
+                //sleep(5);
+                n = recv(sockfd, &buffer, 1024, 0);                         //Read Server String (num3)
+                if (n < 0)
+                        error("ERROR reading from socket");
+                recv(sockfd, &buffer, 1024, 0);
+                printf("First number: %s\n", buffer);
+                n = recv(sockfd, &buffer1, 1024, 0);                         //Read Server String (num3)
+                if (n < 0)
+                        error("ERROR reading from socket");
+                recv(sockfd, &buffer1, 1024, 0);
+                printf("Second number: %s\n", buffer1);
+        //      printf("Client: \t");
+        //      scanf("%s", &buffer[0]);
+        //      send(sockfd, buffer, strlen(buffer), 0);
 
                 if(strcmp(buffer, ":exit") == 0){
-			close(sockfd);
-			printf("[-]Disconnected from server.\n");
-			exit(1);
-		}
+                        close(sockfd);
+                        printf("[-]Disconnected from server.\n");
+                        exit(1);
+                }
 
                 //for(int i=0; i<=1; i++){
-                        n = recv(sockfd, buffer, 1024, 0);                         //Read Server String (num3)
-                        if (n < 0)
-                             error("ERROR reading from socket");
+                       // n = recv(sockfd, buffer, 1024, 0);                         //Read Server String (num3)
+                       // if (n < 0)
+                       //      error("ERROR reading from socket");
 
-                        num1 = int(buffer) - 48;
- 			num2 = int(buffer1) - 48;
-                        suma = num1+num2;			//Send ans2 to server
-		        write(sockfd,&suma, sizeof(int));     
+                num1 = *buffer - '0';
+                num2 = *buffer1 - '0';
+                suma = num1+num2;                       //Send ans2 to server
+                write(sockfd,&suma, sizeof(suma));
+                printf("The result is: %d\n", suma);
+                }
 
 close(sockfd);
 return 0;
 }
+
