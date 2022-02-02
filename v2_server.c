@@ -110,8 +110,14 @@ int num1,num2;
                                                         sleep(1);
                                                         if(ans != 20) break;
                                                 }
+						printf("Client not responding\n");
                                                 close(newsockfd);
                                         }else{
+	                                        for(int i=0; i<5; i++){
+                                                        printf("Waiting...\n");
+                                                        sleep(1);
+                                                        if(ans != 20) break;
+                                                }
                                                 printf("The result is: %d\n", ans);
                                         }
 
