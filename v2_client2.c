@@ -44,11 +44,11 @@ int main(int argc, char *argv[])
         error("ERROR connecting");
 
 int suma;
-int num1, num2;
+int num1, num2, tw=20;
 char buffer1[1024];
 
         while(1){
-                //sleep(5);
+
                 n = recv(sockfd, &buffer, 1024, 0);                         //Read Server String (num3)
                 if (n < 0)
                         error("ERROR reading from socket");
@@ -59,9 +59,6 @@ char buffer1[1024];
                         error("ERROR reading from socket");
                 recv(sockfd, &buffer1, 1024, 0);
                 printf("Second number: %s\n", buffer1);
-        //      printf("Client: \t");
-        //      scanf("%s", &buffer[0]);
-        //      send(sockfd, buffer, strlen(buffer), 0);
 
                 if(strcmp(buffer, ":exit") == 0){
                         close(sockfd);
@@ -69,16 +66,16 @@ char buffer1[1024];
                         exit(1);
                 }
 
-                //for(int i=0; i<=1; i++){
-                       // n = recv(sockfd, buffer, 1024, 0);                         //Read Server String (num3)
-                       // if (n < 0)
-                       //      error("ERROR reading from socket");
-
                 num1 = *buffer - '0';
                 num2 = *buffer1 - '0';
-                suma = 20;                       //Send ans2 to server
+                suma = num1+num2;                       //Send ans2 to server
+
+                write(sockfd,&tw, sizeof(tw));
+
+		sleep(7);
+
                 write(sockfd,&suma, sizeof(suma));
-                }
+         }
 
 close(sockfd);
 return 0;
