@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
                 num2 = *buffer1 - '0';
                 suma = num1+num2;                       //computing the result
 
-                write(sockfd,&tw, sizeof(tw));
+                write(sockfd,&tw, sizeof(tw));		//sending tw=20 to the server, which is interpreted as error in computing
 
                 sleep(7);                              //simulating a broken connection
 

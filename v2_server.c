@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
                 if(newsockfd < 0){
                        exit(1);
                 }
-                printf("Connection accepted from %s:%d\n", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
+                printf("\nConnection accepted from %s:%d\n", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
 
 
                 if((childpid = fork()) == 0){								//forking of processes (concurrent server)
@@ -115,17 +115,19 @@ int main(int argc, char *argv[])
                                         printf("Disconnected from %s:%d\n", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
                                         break;
                                 }else{
-                                        read(newsockfd, &ans, sizeof(int));
+                                        recv(newsockfd, &ans, sizeof(int),0);
                                         if(ans == 20){
                                                 for(int i=0; i<10; i++){
                                                         printf("Waiting...\n");                  //the highest possible computed value is 18, the answer becomes 20 when connection breaks
                                                         sleep(1);
                                                         temp++;
-                                                        read(newsockfd, &ans, sizeof(int));
-                                                        if(ans != 20) break;
+                                                        recv(newsockfd, &ans, sizeof(int),0);
+                                                        if(ans != 20){ 
+								break;
+							}
                                                 }
                                                 if(temp == 10){
-                                                        printf("Client not responding\n");       //implementation of the exception: client disconnected from server
+                                                        printf("Client not responding. Closing the socket.\n");       //implementation of the exception: client disconnected from server
                                                         close(newsockfd);
                                                 }
                                                 else{
