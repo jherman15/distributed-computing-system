@@ -119,28 +119,30 @@ int main(int argc, char *argv[])
                                         if(ans == 20){
                                                 for(int i=0; i<10; i++){
                                                         printf("Waiting...\n");                  //the highest possible computed value is 18, the answer becomes 20 when connection breaks
-                                                        sleep(1);
+                                                        //sleep(1);
                                                         temp++;
+							printf("temp = %d\n", temp);
                                                         recv(newsockfd, &ans, sizeof(int),0);
-                                                        if(ans != 20){ 
+                                                        if(ans != 20){
+								printf("temp_ans!=20 = %d\n", temp);
+								temp=0; 
 								break;
 							}
                                                 }
                                                 if(temp == 10){
                                                         printf("Client not responding. Closing the socket.\n");       //implementation of the exception: client disconnected from server
                                                         close(newsockfd);
+							temp=0;
                                                 }
                                                 else{
                                                         printf("The result is: %d\n", ans);
+							temp=0;
                                                 }
                                         }
-                                        else{
-                                                 printf("The result is: %d\n", ans);
-                                        }//else
 
                                 }//outer else
 
-                        }//inne while
+                        }//inner while
                 }//if((childpid==fork)
         }//outer while
 
