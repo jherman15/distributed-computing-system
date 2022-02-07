@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     }
 
     portno = atoi(argv[2]);
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);				// TCP, IPv4
 
     if (sockfd < 0)
         error("ERROR opening socket");
