@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 							temp=0;
                                                 }
                                                 else{
-                                                        printf("The result is: %d\n", ans);
+                                                        printf("The result received from %s is: %d\n", inet_ntoa(serv_addr.sin_addr), ans);
 							temp=0;
                                                 }
                                         }
