@@ -72,7 +72,7 @@ char buffer1[1024];
 
                 write(sockfd,&tw, sizeof(tw));
 
-		sleep(7);
+		sleep(5);
 
                 write(sockfd,&suma, sizeof(suma));
          }
