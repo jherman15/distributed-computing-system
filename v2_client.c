@@ -1,4 +1,4 @@
-/* Distributed computing system - client 1
+/* Distributed computing system - client
 Bulanda Karol, Herman Jaroslaw, Rosol Jan*/
 
 #include <stdio.h>
@@ -18,7 +18,7 @@ void error(const char *msg)
 }
 int main(int argc, char *argv[])
 {
-    int sockfd, portno, n, num1, num2, sum;
+    int sockfd, portno, n, num1, num2, tw=20, suma;
     struct sockaddr_in serv_addr;
     struct hostent *server;
     char buffer[1024], buffer1[1024];
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     }
 
     portno = atoi(argv[2]);
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);				// TCP, IPv4
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);					// TCP connection (IPv4)
 
     if (sockfd < 0)
         error("ERROR opening socket");
@@ -52,19 +52,20 @@ int main(int argc, char *argv[])
 
 
         while(1){
-                n = recv(sockfd, &buffer, 1024, 0);                         //receiving first digit from the server
+
+                n = recv(sockfd, &buffer, 1024, 0);                         //receiving the first digit from the server
                 if (n < 0)
                         error("ERROR reading from socket");
                 recv(sockfd, &buffer, 1024, 0);
                 printf("First digit: %s\n", buffer);
 
-                n = recv(sockfd, &buffer1, 1024, 0);                         //receiving second digit from the server
+                n = recv(sockfd, &buffer1, 1024, 0);                         //receiving the second digit from server
                 if (n < 0)
                         error("ERROR reading from socket");
                 recv(sockfd, &buffer1, 1024, 0);
                 printf("Second digit: %s\n", buffer1);
 
-                if(strcmp(buffer1, ":exit") == 0){
+                if(strcmp(buffer, ":exit") == 0){
                         close(sockfd);
                         printf("[-]Disconnected from server.\n");
                         exit(1);
@@ -72,8 +73,13 @@ int main(int argc, char *argv[])
 
                 num1 = *buffer - '0';
                 num2 = *buffer1 - '0';
-                sum = num1+num2;                       //computing the result and sending it back to the server
-                write(sockfd,&sum, sizeof(sum));
+                suma = num1+num2;                       //computing the result
+
+                write(sockfd,&tw, sizeof(tw));		//sending tw=20 to the server, which is interpreted as error in computing
+
+                sleep(7);                              //simulating a broken connection
+
+                write(sockfd,&suma, sizeof(suma));     //if the connection doesn't break, a correct result is sent back to server
          }
 
 close(sockfd);

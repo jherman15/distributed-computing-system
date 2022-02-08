@@ -1,11 +1,14 @@
-#include        <sys/types.h>   /* basic system data types */
-#include        <sys/socket.h>  /* basic socket definitions */
-#include        <sys/time.h>    /* timeval{} for select() */
-#include        <time.h>                /* timespec{} for pselect() */
-#include        <netinet/in.h>  /* sockaddr_in{} and other Internet defns */
-#include        <arpa/inet.h>   /* inet(3) functions */
+/* Distributed computing system - server
+Bulanda Karol, Herman Jaroslaw, Rosol Jan*/
+
+#include        <sys/types.h>
+#include        <sys/socket.h>
+#include        <sys/time.h>
+#include        <time.h>
+#include        <netinet/in.h>
+#include        <arpa/inet.h>
 #include        <errno.h>
-#include        <fcntl.h>               /* for nonblocking */
+#include        <fcntl.h>
 #include        <netdb.h>
 #include        <signal.h>
 #include        <stdio.h>
@@ -16,7 +19,7 @@
 #include        <ctype.h>
 
 void
-sig_chld(int signo)                                                             //jh: SIGCHILD
+sig_chld(int signo)                                                             //SIGCHILD
 {
         pid_t   pid;
         int             stat;
@@ -34,20 +37,18 @@ void error(const char *msg)
 
 int main(int argc, char *argv[])
 {
-     int sockfd, newsockfd, portno;
+     int sockfd, newsockfd, portno, num1, num2;
      int temp = 0;
      socklen_t clilen;
      char buffer[1024];
-     char buffer1[1024];
      struct sockaddr_in serv_addr, cli_addr;
-     void                            sig_chld(int);
-
+     void                     sig_chld(int);
      int n,ans;
      socklen_t addr_size;
      pid_t childpid;
 
 
-#define SIGCHLD_                                                                //jh: SIGCHILD
+#define SIGCHLD_                                                                //SIGCHILD
 #ifdef SIGCHLD
     struct sigaction new_action, old_action;
 
@@ -63,7 +64,6 @@ int main(int argc, char *argv[])
     }
 
 #endif
-      //signal(SIGCHLD, sig_chld);
       signal(SIGCHLD, SIG_IGN);
 
 
@@ -76,75 +76,75 @@ int main(int argc, char *argv[])
      if (sockfd < 0)
         error("ERROR opening socket");
      bzero((char *) &serv_addr, sizeof(serv_addr));
-     portno = atoi(argv[1]);                                    // argv[1] - contain the port number
+     portno = atoi(argv[1]);                                    // argv[1] - port number
      serv_addr.sin_family = AF_INET;
      serv_addr.sin_addr.s_addr = INADDR_ANY;
      serv_addr.sin_port = htons(portno);
      if (bind(sockfd, (struct sockaddr *) &serv_addr,
               sizeof(serv_addr)) < 0)
               error("ERROR on binding");
-     listen(sockfd,5);                                          // The number gives the maximum limit of client at same time
+     listen(sockfd,5);
 
 
         while(1){
                 newsockfd = accept(sockfd, (struct sockaddr*)&serv_addr, &addr_size);
                 if(newsockfd < 0){
-                        exit(1);
+                       exit(1);
                 }
-                printf("Connection accepted from %s:%d\n", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
-
-int num1,num2;
+                printf("\nConnection accepted from %s:%d\n", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
 
 
-                if((childpid = fork()) == 0){
+                if((childpid = fork()) == 0){								//forking of processes (concurrent server)
                         close(sockfd);
 
                         while(1){
- 
-                                printf("Enter number 1: ");
+
+                                printf("Enter the first digit: ");                                       // first digit inserted by user
                                 scanf("%s", &buffer);
                                 send(newsockfd, &buffer, strlen(buffer), 0);
                                 n = write(newsockfd, &buffer, sizeof(num1));
                                 if (n < 0) error("ERROR writing to socket");
 
-                                printf("Enter number 2: ");                                        //second number (client2)
-                                scanf("%s", &buffer1);
-                                send(newsockfd, &buffer1, strlen(buffer1), 0);
-                                n = write(newsockfd, &buffer1, sizeof(buffer1));
+                                printf("Enter the second digit: ");                                        //second digit inserted by user
+                                scanf("%s", &buffer);
+                                send(newsockfd, &buffer, strlen(buffer), 0);
+                                n = write(newsockfd, &buffer, sizeof(buffer));
                                 if (n < 0) error("ERROR writing to socket");
 
-                                if(strcmp(buffer1, ":exit") == 0){
+                                if(strcmp(buffer, ":exit") == 0){
                                         printf("Disconnected from %s:%d\n", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
                                         break;
                                 }else{
-                                        read(newsockfd, &ans, sizeof(int));
+                                        recv(newsockfd, &ans, sizeof(int),0);
+					sleep(1);
+					recv(newsockfd, &ans, sizeof(int),0);
+
                                         if(ans == 20){
                                                 for(int i=0; i<10; i++){
-                                                        printf("Waiting...\n");
+                                                        printf("Waiting...\n");             		     //the highest possible computed value is 18, the answer becomes 20 when connection breaks
                                                         sleep(1);
                                                         temp++;
-                                                        read(newsockfd, &ans, sizeof(int));
-                                                        if(ans != 20) break;
                                                 }
-                                                if(temp == 10){
-                                                        printf("Client not responding\n");
-                                                        close(newsockfd);
-                                                }
-	                                        else{
-        	                                        printf("The result is: %d\n", ans);
-                	                        }//else
-                                        }//if(ans==20)
-					else{
-                                                 printf("The result is: %d\n", ans);
-                                        }//else
 
+                                                printf("Client not responding. Closing the socket.\n");       //implementation of the exception: client disconnected from server
+                                                close(newsockfd);
+                                                temp=0;
+                                        }
+                                        else{
+                                                for(int i=0; i<10; i++){
+                                                        printf("Waiting ok\n");
+                                                        sleep(1);
+                                                        temp++;
+                                                }
+                                              	printf("The result received from %s is: %d\n", inet_ntoa(serv_addr.sin_addr), ans);
+                                                temp=0;
+                                        }
                                 }//outer else
-
-                        }// if(strcmp...)
-                }// inner while
+                        }//inner while
+                }//if((childpid==fork)
         }//outer while
 
      close(newsockfd);
      close(sockfd);
      return 0;
-}//main
+}
