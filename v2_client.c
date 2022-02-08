@@ -57,13 +57,13 @@ int main(int argc, char *argv[])
                 if (n < 0)
                         error("ERROR reading from socket");
                 recv(sockfd, &buffer, 1024, 0);
-                printf("First digit: %s\n", buffer);
+                printf("First digit received from the server: %s\n", buffer);
 
                 n = recv(sockfd, &buffer1, 1024, 0);                         //receiving the second digit from server
                 if (n < 0)
                         error("ERROR reading from socket");
                 recv(sockfd, &buffer1, 1024, 0);
-                printf("Second digit: %s\n", buffer1);
+                printf("Second digit received from the server: %s\n", buffer1);
 
                 if(strcmp(buffer, ":exit") == 0){
                         close(sockfd);
