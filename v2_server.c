@@ -115,51 +115,36 @@ int main(int argc, char *argv[])
                                         printf("Disconnected from %s:%d\n", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
                                         break;
                                 }else{
-					sleep(2);
                                         recv(newsockfd, &ans, sizeof(int),0);
-                                        //sleep(1);
-                                        //recv(newsockfd, &ans, sizeof(int),0);
+					sleep(1);
+					recv(newsockfd, &ans, sizeof(int),0);
+
                                         if(ans == 20){
                                                 for(int i=0; i<10; i++){
-                                                        printf("Waiting...\n");                  //the highest possible computed value is 18, the answer becomes 20 when connection breaks
+                                                        printf("Waiting...\n");             		     //the highest possible computed value is 18, the answer becomes 20 when connection breaks
                                                         sleep(1);
                                                         temp++;
-                                                        //printf("temp = %d\n", temp);
-//                                                        recv(newsockfd, &ans, sizeof(int),0);
                                                 }
-                                               // if(temp == 10){
 
                                                 printf("Client not responding. Closing the socket.\n");       //implementation of the exception: client disconnected from server
                                                 close(newsockfd);
                                                 temp=0;
-                                               // }
-                                                /*else{
-                                                        printf("The result is: %d\n", ans);
-                                                        temp=0;
-                                                }*/
                                         }
                                         else{
                                                 for(int i=0; i<10; i++){
                                                         printf("Waiting ok\n");
                                                         sleep(1);
                                                         temp++;
-                                                       // printf("temp = %d\n", temp);
-//                                                        recv(newsockfd, &ans, sizeof(int),0);
                                                 }
-                                                //if(temp == 10){
-                                                printf("The result is: %d\n", ans);       //implementation of the exception: client disconnected from server
-                                                //close(newsockfd);
+                                              	printf("The result received from %s is: %d\n", inet_ntoa(serv_addr.sin_addr), ans);
                                                 temp=0;
-                                               // }
                                         }
                                 }//outer else
-
                         }//inner while
                 }//if((childpid==fork)
         }//outer while
 
      close(newsockfd);
-
      close(sockfd);
      return 0;
 }
