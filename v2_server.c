@@ -130,13 +130,13 @@ int main(int argc, char *argv[])
                                                 close(newsockfd);
                                                 temp=0;
                                         }
-                                        else{
+                                        else{									//if the computed value is correct, use this loop
                                                 for(int i=0; i<10; i++){
                                                         printf("Waiting for the result...\n");
                                                         sleep(1);
                                                         temp++;
                                                 }
-                                              	printf("The result received from %s is: %d\n", inet_ntoa(serv_addr.sin_addr), ans);
+                                              	printf("The result received from %s is: %d\n", inet_ntoa(serv_addr.sin_addr), ans);	//if the value is correct, display the result
                                                 temp=0;
                                         }
                                 }//outer else
