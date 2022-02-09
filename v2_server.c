@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 
                                         if(ans == 20){
                                                 for(int i=0; i<10; i++){
-                                                        printf("Waiting...\n");             		     //the highest possible computed value is 18, the answer becomes 20 when connection breaks
+                                                        printf("Waiting for the result...\n");             		     //the highest possible computed value is 18, the answer becomes 20 when connection breaks
                                                         sleep(1);
                                                         temp++;
                                                 }
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
                                         }
                                         else{
                                                 for(int i=0; i<10; i++){
-                                                        printf("Waiting ok\n");
+                                                        printf("Waiting for the result...\n");
                                                         sleep(1);
                                                         temp++;
                                                 }
